@@ -1,0 +1,74 @@
+{
+  "name": "@bytediver/ngx-structured-data",
+  "artifactName": "ngx-structured-data",
+  "moduleName": "ngxStructuredData",
+  "description": "Angular.io components for structured data",
+  "version": "1.0.1",
+  "author": "Bytediver GmbH",
+  "main": "dist/bundles/ngx-structured-data.umd.js",
+  "module": "dist/index.js",
+  "jsnext:main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bytediver-GmbH/ngx-structured-data.git"
+  },
+  "scripts": {
+    "build": "npm run compile && npm run bundle",
+    "demo": "webpack-dev-server",
+    "bundle": "npm run rollup && npm run uglify",
+    "compile": "ngc -p src/tsconfig-lib.json",
+    "rollup": "rollup -c rollup.config.js",
+    "uglify": "uglifyjs --comments -o ./dist/bundles/ngx-structured-data.umd.min.js -- ./dist/bundles/ngx-structured-data.umd.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "peerDependencies": {
+    "@angular/core": ">=10",
+    "@angular/common": ">=10",
+    "tslib": "2"
+  },
+  "devDependencies": {
+    "@angular/common": "10",
+    "@angular/compiler": "10",
+    "@angular/compiler-cli": "10",
+    "@angular/core": "10",
+    "@angular/forms": "10",
+    "@angular/platform-browser": "10",
+    "@angular/platform-browser-dynamic": "10",
+    "@rollup/plugin-commonjs": "14",
+    "@rollup/plugin-node-resolve": "8",
+    "@types/node": "14.0.4",
+    "angular2-template-loader": "0.6",
+    "awesome-typescript-loader": "5",
+    "bootstrap": "4",
+    "core-js": "3",
+    "css-loader": "4",
+    "file-loader": "6",
+    "html-loader": "1",
+    "html-webpack-plugin": "4",
+    "node-sass": "4",
+    "resolve-url-loader": "^3.1.2",
+    "rollup": "2",
+    "rxjs": "6",
+    "sass-loader": "9",
+    "source-map-loader": "1",
+    "style-loader": "1",
+    "to-string-loader": "1.1",
+    "tslib": "2",
+    "typescript": "3.9",
+    "uglify-js": "3",
+    "url-loader": "4",
+    "watch": "1",
+    "webpack": "4",
+    "webpack-cli": "3",
+    "webpack-dev-server": "3",
+    "webpack-stats-plugin": "0.3",
+    "zone.js": "0.10"
+  },
+  "dependencies": {
+    "@angular/router": "^11.2.5"
+  }
+}
