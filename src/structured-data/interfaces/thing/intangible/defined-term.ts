@@ -3,6 +3,6 @@ import {DefinedTermSet} from "../creative-work/defined-term-set";
 import {Intangible} from "../intangible";
 
 export interface DefinedTerm extends Intangible {
-  inDefinedTermSet: DefinedTermSet | URL;
-  termCode: string;
+  inDefinedTermSet?: DefinedTermSet | URL;
+  termCode?: string;
 }
