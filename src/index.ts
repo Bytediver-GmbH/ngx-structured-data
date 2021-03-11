@@ -1,3 +1,5 @@
+export {StructuredDataService} from "./structured-data/structured-data.service";
+export {StructuredDataModule} from "./structured-data/structured-data.module";
 export {URL} from "./structured-data/interfaces/data-types/text/url";
 export {Date} from "./structured-data/interfaces/data-types/date";
 export {Time} from "./structured-data/interfaces/data-types/time";
