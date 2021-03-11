@@ -3,7 +3,7 @@
   "artifactName": "ngx-structured-data",
   "moduleName": "ngxStructuredData",
   "description": "Angular.io components for structured data",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Bytediver GmbH",
   "main": "dist/bundles/ngx-structured-data.umd.js",
   "module": "dist/index.js",
