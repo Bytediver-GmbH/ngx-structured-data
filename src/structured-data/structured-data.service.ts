@@ -1,72 +1,58 @@
 import {Injectable} from "@angular/core";
-import {Place} from "./interfaces/place";
-import {Address} from "./interfaces/address";
-import {GeoCoordinates} from "./interfaces/geo-coordinates";
-import {OpeningHoursSpecification} from "./interfaces/opening-hours-specification";
-import {Business} from "./interfaces/business";
-import {Question} from "./interfaces/question";
+import {OpeningHoursSpecification} from "./interfaces/thing/intangible/structured-value/opening-hours-specification";
+import {Question} from "./interfaces/thing/creative-work/comment/question";
+import {TYPE_GUARDS} from "./typeguards";
+import {LocalBusiness} from "./interfaces/thing/organization/local-business";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class StructuredDataService {
-  static address = (address: Address) => {
-    address['@type'] = 'PostalAddress';
-    return address;
+
+  private static addTypeToData(data: any, type: string) {
+    data['@type'] = type;
+    return data;
   }
 
-  static geoCoordinates = (coordinates: GeoCoordinates) => {
-    coordinates['@type'] = 'GeoCoordinates';
-    return coordinates;
-  }
-  static openingHour = (specifications: OpeningHoursSpecification[]) => {
+  public static openingHour(specifications: OpeningHoursSpecification[]) {
     return specifications.map((specification) => {
-      specification["@type"] = "OpeningHoursSpecification";
+      return StructuredDataService.compileSchema(specification);
     });
   }
 
-  static localBusiness = (business: Business) => {
-    const c: any = {
-      "@context": "https://schema.org",
-      "@type": "Corporation",
-      "@id": business.url,
-      'logo': business.logo,
-      "name": business.name,
-      "address": StructuredDataService.address(business.address),
-      "geo": StructuredDataService.geoCoordinates(business.geo),
-      "url": business.url,
-      "telephone": business.telephone
+  public static corporation(business: LocalBusiness) {
+    business['@id'] = business.url;
+    business = StructuredDataService.compileSchema(business);
+
+    if (typeof business.address !== "undefined") {
+      business.address = StructuredDataService.compileSchema(business.address);
+    }
+    if (typeof business.geo !== "undefined") {
+      business.geo = StructuredDataService.compileSchema(business.geo);
     }
     if (typeof business.openingHoursSpecification !== "undefined") {
-      c.openingHoursSpecification = StructuredDataService.openingHour(business.openingHoursSpecification)
+      business.openingHoursSpecification = StructuredDataService.openingHour(business.openingHoursSpecification)
     }
-
-    return c;
+    return business;
   }
 
   static faqPage = (questions: Question[]) => {
     questions.map((question) => {
-      question['@type'] = "Question";
-      question.acceptedAnswer['@type'] = "Answer";
+      question = StructuredDataService.compileSchema(question);
+      question.acceptedAnswer = StructuredDataService.compileSchema(question.acceptedAnswer);
+      return question;
     });
 
-    return {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
+    return StructuredDataService.compileSchema({
       "mainEntity": questions
-    };
+    });
   }
   static personSchema = (contact: any) => {
     const cc: any = {
-      "@context": "https://schema.org",
       "@type": "Person",
       "email": "mailto:" + contact.mail,
       "image": 'https://www.bytediver.com/' + contact.image.src,
-      'givenName': contact.firstName,
-      'familyName': contact.lastName,
-      "jobTitle": contact.position,
-      "name": contact.firstName + ' ' + contact.lastName,
       "telephone": contact.phone,
       "worksFor": "Bytediver GmbH"
     }
@@ -76,48 +62,52 @@ export class StructuredDataService {
     return cc;
   }
 
-  static place = (place: Place) => {
-    const c: any = {
-      "@context": "https://schema.org",
-      "@type": "Place",
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": place.latitude,
-        "longitude": place.longitude
-      },
-      "name": place.name,
-    };
-    if (place.hasMap) {
-      c.hasMap = place.hasMap;
+  public static compileSchema(schema: Record<string, any>) {
+    for (let name in TYPE_GUARDS) {
+      if (TYPE_GUARDS[name](schema)) {
+        const data = StructuredDataService.addTypeToData(schema, name);
+        for (let key in data) {
+          if (!data.hasOwnProperty(key)) {
+            // If prototype value, skip
+            continue;
+          }
+          if (!Array.isArray(data[key])) {
+            // if the property is an object
+            data[key] = StructuredDataService.compileIfObject(data[key]);
+            continue;
+          }
+          // if the property is an array of possible objects
+          for (let i = 0; i < data[key].length; i++) {
+            data[key][i] = StructuredDataService.compileIfObject(data[key][i]);
+          }
+        }
+        return data;
+      }
     }
-    if (place.logo) {
-      c.logo = place.logo;
-    }
-    if (place.telephone) {
-      c.telephone = place.telephone;
-    }
-    if (place.address) {
-      c.address = {
-        "@type": "PostalAddress",
-        "addressLocality": place.address.addressLocality,
-        "addressRegion": place.address.addressRegion,
-        "postalCode": place.address.postalCode,
-        "streetAddress": place.address.streetAddress
-      };
-    }
-    return c;
   }
 
-  removeStructuredData(): void {
+  private static compileIfObject(item: any) {
+    if (typeof item === 'object') {
+      // if the property is a object
+      return StructuredDataService.compileSchema(item);
+    }
+    return item;
+  }
+
+
+  public removeStructuredData(): void {
     Array.from(window.document.head.getElementsByClassName('structured-data'))
       .forEach(el => window.document.head.removeChild(el));
   }
 
-  insertSchema(schema: Record<string, any>): void {
+  public insertSchema(schema: Record<string, any>, context: string = 'https://schema.org'): void {
     let script = window.document.createElement('script');
     script.setAttribute('class', 'structured-data');
     script.type = 'application/ld+json';
-    script.text = JSON.stringify(schema);
+
+    // Always add a context if the passed schema is added to the document
+    schema['@context'] = context;
+    script.text = JSON.stringify(StructuredDataService.compileSchema(schema));
     window.document.head.appendChild(script);
   }
 }
