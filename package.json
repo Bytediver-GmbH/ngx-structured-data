@@ -3,7 +3,7 @@
   "artifactName": "ngx-structured-data",
   "moduleName": "ngxStructuredData",
   "description": "Angular.io components for structured data",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "author": "Bytediver GmbH",
   "main": "dist/bundles/ngx-structured-data.umd.js",
   "module": "dist/index.js",
@@ -25,24 +25,18 @@
     "dist",
     "src"
   ],
-  "peerDependencies": {
-    "@angular/core": ">=10",
-    "@angular/common": ">=10",
-    "tslib": "2"
-  },
   "devDependencies": {
-    "@angular/common": "10",
-    "@angular/compiler": "10",
-    "@angular/compiler-cli": "10",
-    "@angular/core": "10",
-    "@angular/forms": "10",
-    "@angular/platform-browser": "10",
-    "@angular/platform-browser-dynamic": "10",
+    "@angular/common": "^16.2.12",
+    "@angular/compiler": "^16.2.12",
+    "@angular/compiler-cli": "^16.2.12",
+    "@angular/core": "^16.2.12",
+    "@angular/forms": "^16.2.12",
+    "@angular/platform-browser": "^16.2.12",
+    "@angular/platform-browser-dynamic": "^16.2.12",
     "@rollup/plugin-commonjs": "14",
     "@rollup/plugin-node-resolve": "8",
     "@types/node": "14.0.4",
     "angular2-template-loader": "0.6",
-    "awesome-typescript-loader": "5",
     "bootstrap": "4",
     "core-js": "3",
     "css-loader": "4",
@@ -57,7 +51,7 @@
     "style-loader": "1",
     "to-string-loader": "1.1",
     "tslib": "2",
-    "typescript": "3.9",
+    "typescript": "~4.9.5",
     "uglify-js": "3",
     "url-loader": "4",
     "watch": "1",
@@ -65,9 +59,6 @@
     "webpack-cli": "3",
     "webpack-dev-server": "3",
     "webpack-stats-plugin": "0.3",
-    "zone.js": "0.10"
-  },
-  "dependencies": {
-    "@angular/router": "^11.2.5"
+    "zone.js": "~0.13.3"
   }
 }
